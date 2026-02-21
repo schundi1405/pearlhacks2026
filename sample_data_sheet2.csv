@@ -1,0 +1,130 @@
+date,amount,category,type
+8/19/2025,80000,summer,income
+8/21/2025,22.88,"personal (clothes, shopping, gifts)",expense
+8/22/2025,45.15,school,expense
+8/22/2025,650,income,income
+8/23/2025,49.5,dining,expense
+8/23/2025,10.0,school,expense
+8/24/2025,46.62,dining,expense
+8/24/2025,20.00,school,expense
+8/24/2025,16.86,"personal (clothes, shopping, gifts)",expense
+8/26/2025,45.31,transport,expense
+8/26/2025,39.81,"personal (clothes, shopping, gifts)",expense
+8/26/2025,40.00,school,expense
+8/26/2025,25.46,"personal (clothes, shopping, gifts)",expense
+8/27/2025,44.52,transport,expense
+8/27/2025,34.52,school,expense
+8/28/2025,13.03,"personal (clothes, shopping, gifts)",expense
+8/31/2025,800,"rent",expense
+9/1/2025,43.19,dining,expense
+9/2/2025,38.44,transport,expense
+9/5/2025,650,income,income
+9/15/2025,3.44,dining,expense
+9/16/2025,7.85,transport,expense
+9/18/2025,48.67,"personal (clothes, shopping, gifts)",expense
+9/19/2025,650,income,income
+9/20/2025,46.46,dining,expense
+9/21/2025,37.94,"personal (clothes, shopping, gifts)",expense
+9/24/2025,7.88,transport,expense
+9/25/2025,34.04,transport,expense
+9/26/2025,3.99,transport,expense
+9/26/2025,17.98,"personal (clothes, shopping, gifts)",expense
+9/26/2025,3.91,"personal (clothes, shopping, gifts)",expense
+9/27/2025,3.82,"personal (clothes, shopping, gifts)",expense
+9/29/2025,25.75,transport,expense
+9/30/2025,800,"rent",expense
+10/2/2025,14.06,"personal (clothes, shopping, gifts)",expense
+10/3/2025,26.83,transport,expense
+10/3/2025,650,income,income
+10/4/2025,28.81,dining,expense
+10/9/2025,21.99,dining,expense
+10/12/2025,41.95,dining,expense
+10/14/2025,28.21,dining,expense
+10/14/2025,46.08,transport,expense
+10/16/2025,47.55,dining,expense
+10/16/2025,24.91,"personal (clothes, shopping, gifts)",expense
+10/17/2025,5.64,dining,expense
+10/17/2025,14.45,transport,expense
+10/17/2025,650,income,income
+10/19/2025,1.23,transport,expense
+10/20/2025,27.56,"personal (clothes, shopping, gifts)",expense
+10/20/2025,9.24,"personal (clothes, shopping, gifts)",expense
+10/21/2025,26.28,dining,expense
+10/22/2025,39.41,dining,expense
+10/29/2025,27.41,"personal (clothes, shopping, gifts)",expense
+10/31/2025,800,"rent",expense
+10/31/2025,650,income,income
+11/3/2025,7.93,transport,expense
+11/3/2025,43.89,transport,expense
+11/4/2025,8.37,"personal (clothes, shopping, gifts)",expense
+11/5/2025,13.09,"personal (clothes, shopping, gifts)",expense
+11/6/2025,5.75,"personal (clothes, shopping, gifts)",expense
+11/6/2025,8.12,dining,expense
+11/9/2025,45.33,dining,expense
+11/10/2025,33.15,"personal (clothes, shopping, gifts)",expense
+11/12/2025,4.54,dining,expense
+11/13/2025,22.23,"personal (clothes, shopping, gifts)",expense
+11/13/2025,8.55,"personal (clothes, shopping, gifts)",expense
+11/14/2025,34.89,dining,expense
+11/14/2025,650,income,income
+11/16/2025,7.6,"personal (clothes, shopping, gifts)",expense
+11/16/2025,36.96,"personal (clothes, shopping, gifts)",expense
+11/16/2025,17.02,transport,expense
+11/17/2025,44.74,"personal (clothes, shopping, gifts)",expense
+11/19/2025,44.11,dining,expense
+11/20/2025,30.37,transport,expense
+11/20/2025,28.69,dining,expense
+11/27/2025,2.52,dining,expense
+11/28/2025,650,income,income
+11/30/2025,800,"rent",expense
+12/6/2025,47.89,dining,expense
+12/10/2025,42.32,transport,expense
+12/11/2025,16.9,"personal (clothes, shopping, gifts)",expense
+12/11/2025,24.56,dining,expense
+12/11/2025,33.25,transport,expense
+12/12/2025,650,income,income
+12/15/2025,26.28,dining,expense
+12/20/2025,2,transport,expense
+12/24/2025,9.42,transport,expense
+12/26/2025,650,income,income
+12/27/2025,22.36,transport,expense
+12/29/2025,18.83,"personal (clothes, shopping, gifts)",expense
+12/31/2025,800,"rent",expense
+1/2/2026,23.89,"personal (clothes, shopping, gifts)",expense
+1/4/2026,7.16,dining,expense
+1/5/2026,50.00,school,expense
+1/6/2026,23.12,"personal (clothes, shopping, gifts)",expense
+1/6/2026,30.47,transport,expense
+1/7/2026,34,"personal (clothes, shopping, gifts)",expense
+1/7/2026,650,income,income
+1/9/2026,20.07,school,expense
+1/12/2026,45.13,dining,expense
+1/13/2026,35.15,school,expense
+1/14/2026,45.64,"personal (clothes, shopping, gifts)",expense
+1/19/2026,5.96,transport,expense
+1/19/2026,14.98,dining,expense
+1/20/2026,40.00,school,expense
+1/19/2026,37.73,"personal (clothes, shopping, gifts)",expense
+1/21/2026,49.34,transport,expense
+1/21/2026,650,income,income
+1/24/2026,3.51,"personal (clothes, shopping, gifts)",expense
+1/25/2026,30.04,dining,expense
+1/31/2026,800,"rent",expense
+2/2/2026,46.98,"personal (clothes, shopping, gifts)",expense
+2/3/2026,29.7,dining,expense
+2/4/2026,35.71,"personal (clothes, shopping, gifts)",expense
+2/4/2026,28.17,transport,expense
+2/4/2026,650,income,income
+2/7/2026,23.43,"personal (clothes, shopping, gifts)",expense
+2/7/2026,5.57,dining,expense
+2/11/2026,7.43,dining,expense
+2/13/2026,37.31,dining,expense
+2/13/2026,16.75,dining,expense
+2/13/2026,24.58,transport,expense
+2/15/2026,34.14,transport,expense
+2/16/2026,22.35,transport,expense
+2/17/2026,37.41,"personal (clothes, shopping, gifts)",expense
+2/18/2026,43.12,transport,expense
+2/18/2026,650,income,income
+2/21/2026,30.46,transport,expense
+2/21/2026,20.6,"personal (clothes, shopping, gifts)",expense
