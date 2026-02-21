@@ -1,7 +1,7 @@
 # utils.py
 import pandas as pd
 
-CSV_FILE = "transactions.csv"
+CSV_FILE = "sample_data_sheet1.csv"
 
 def load_transactions():
     """Load CSV and parse dates"""
