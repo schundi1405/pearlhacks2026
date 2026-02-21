@@ -2,7 +2,7 @@
 import streamlit as st
 from datetime import date as dt_date
 from utils import add_transaction, load_transactions, spending_by_weekday
-from model import train_model
+from model import forecast_next_6_months
 import pandas as pd
 import torch
 
@@ -69,3 +69,24 @@ if weekday_totals is not None:
     )
 else:
     st.info("Not enough expense data yet.")
+
+
+# predict spending
+st.subheader("Balance Forecast (Next 6 Months)")
+
+actual_df, forecast_df, explanation = forecast_next_6_months()
+
+if actual_df is not None:
+
+    actual_plot = actual_df[["date", "cumulative_balance"]].set_index("date")
+    forecast_plot = forecast_df.set_index("date")
+
+    combined = actual_plot.join(forecast_plot, how="outer")
+
+    st.line_chart(combined)
+
+    st.write("### Why this prediction?")
+    st.write(explanation)
+
+else:
+    st.info("Not enough data to forecast.")
