@@ -9,7 +9,7 @@ import torch
 st.set_page_config(page_title="Transaction Tracker", layout="wide")
 st.title("Transaction Tracker")
 
-# 1. Add transaction form
+# --- 1. Add transaction form ---
 with st.form("add_transaction_form"):
     date_input = st.date_input("Date", dt_date.today())
     amount_input = st.number_input("Amount", min_value=0.0, step=0.01)
@@ -23,16 +23,23 @@ with st.form("add_transaction_form"):
         st.success("Transaction added!")
         st.dataframe(df)
 
-# 2. Display all transactions
+# --- 2. Display all transactions ---
 st.subheader("All Transactions")
 df = load_transactions()
 st.dataframe(df)
 
-# 3. Train and display simple model prediction
-st.subheader("Amount Prediction Over Time")
-if st.button("Train & Predict"):
-    model = train_model()
-    df['date_ordinal'] = df['date'].map(lambda x: x.toordinal())
-    X = torch.tensor(df['date_ordinal'].values, dtype=torch.float32).unsqueeze(1)
-    df['predicted_amount'] = model(X).detach().numpy()
-    st.line_chart(df[['amount', 'predicted_amount']])
+# --- 3. Monthly net amount visualization ---
+st.subheader("Monthly Net Amount")
+
+if not df.empty:
+    # Convert amounts to positive/negative based on type
+    df['signed_amount'] = df.apply(lambda row: row['amount'] if row['type']=='income' else -row['amount'], axis=1)
+    
+    # Group by month
+    df['month'] = df['date'].dt.to_period('M')
+    monthly = df.groupby('month')['signed_amount'].sum().reset_index()
+    
+    # Streamlit line chart
+    st.line_chart(data=monthly.set_index('month')['signed_amount'])
+else:
+    st.info("No transactions yet to display.")
