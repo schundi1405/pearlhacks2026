@@ -4,6 +4,7 @@ from datetime import date as dt_date
 from utils import add_transaction, load_transactions
 from model import train_model
 import pandas as pd
+import torch
 
 st.set_page_config(page_title="Transaction Tracker", layout="wide")
 st.title("Transaction Tracker")
