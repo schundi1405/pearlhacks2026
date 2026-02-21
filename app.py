@@ -28,18 +28,22 @@ st.subheader("All Transactions")
 df = load_transactions()
 st.dataframe(df)
 
-# --- 3. Monthly net amount visualization ---
-st.subheader("Monthly Net Amount")
+# --- 3. Cumulative balance visualization ---
+st.subheader("Cumulative Balance Over Time")
 
 if not df.empty:
     # Convert amounts to positive/negative based on type
-    df['signed_amount'] = df.apply(lambda row: row['amount'] if row['type']=='income' else -row['amount'], axis=1)
+    df['signed_amount'] = df.apply(
+        lambda row: row['amount'] if row['type']=='income' else -row['amount'], axis=1
+    )
     
-    # Group by month
-    df['month'] = df['date'].dt.to_period('M')
-    monthly = df.groupby('month')['signed_amount'].sum().reset_index()
+    # Sort by date
+    df = df.sort_values('date')
     
-    # Streamlit line chart
-    st.line_chart(data=monthly.set_index('month')['signed_amount'])
+    # Compute cumulative balance
+    df['cumulative_balance'] = df['signed_amount'].cumsum()
+    
+    # Line chart with dates on x-axis, cumulative balance on y-axis
+    st.line_chart(data=df.set_index('date')['cumulative_balance'])
 else:
     st.info("No transactions yet to display.")
