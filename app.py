@@ -1,7 +1,7 @@
 # app.py
 import streamlit as st
 from datetime import date as dt_date
-from utils import add_transaction, load_transactions
+from utils import add_transaction, load_transactions, spending_by_weekday
 from model import train_model
 import pandas as pd
 import torch
@@ -47,3 +47,25 @@ if not df.empty:
     st.line_chart(data=df.set_index('date')['cumulative_balance'])
 else:
     st.info("No transactions yet to display.")
+
+
+st.subheader("Spending by Day of Week")
+
+weekday_totals, max_day, min_day = spending_by_weekday()
+
+if weekday_totals is not None:
+    st.bar_chart(
+        data=weekday_totals.set_index("weekday")["amount"]
+    )
+
+    st.write(
+        f"Highest Spending Day on Average: **{max_day['weekday']}** "
+        f"(${max_day['amount']:.2f})"
+    )
+
+    st.write(
+        f"Lowest Spending Day on Average: **{min_day['weekday']}** "
+        f"(${min_day['amount']:.2f})"
+    )
+else:
+    st.info("Not enough expense data yet.")
