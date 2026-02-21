@@ -1,10 +1,10 @@
 date,amount,category,type
 8/19/2025,80000,summer,income
-8/21/2025,22.88,"personal (clothes, shopping, gifts)",expense
+8/21/2025,2000.00,"personal (clothes, shopping, gifts)",expense
 8/22/2025,45.15,school,expense
 8/22/2025,650,income,income
 8/23/2025,49.5,dining,expense
-8/23/2025,10.0,school,expense
+8/23/2025,500.0,school,expense
 8/24/2025,46.62,dining,expense
 8/24/2025,20.00,school,expense
 8/24/2025,16.86,"personal (clothes, shopping, gifts)",expense
@@ -19,11 +19,13 @@ date,amount,category,type
 9/1/2025,43.19,dining,expense
 9/2/2025,38.44,transport,expense
 9/5/2025,650,income,income
+9/6/2025, 2000,"personal (clothes, shopping, gifts)",expense
 9/15/2025,3.44,dining,expense
 9/16/2025,7.85,transport,expense
 9/18/2025,48.67,"personal (clothes, shopping, gifts)",expense
 9/19/2025,650,income,income
 9/20/2025,46.46,dining,expense
+9/20/2025, 2000,"personal (clothes, shopping, gifts)",expense
 9/21/2025,37.94,"personal (clothes, shopping, gifts)",expense
 9/24/2025,7.88,transport,expense
 9/25/2025,34.04,transport,expense
@@ -38,6 +40,7 @@ date,amount,category,type
 10/3/2025,650,income,income
 10/4/2025,28.81,dining,expense
 10/9/2025,21.99,dining,expense
+10/11/2025, 2000,"personal (clothes, shopping, gifts)",expense
 10/12/2025,41.95,dining,expense
 10/14/2025,28.21,dining,expense
 10/14/2025,46.08,transport,expense
@@ -60,6 +63,7 @@ date,amount,category,type
 11/5/2025,13.09,"personal (clothes, shopping, gifts)",expense
 11/6/2025,5.75,"personal (clothes, shopping, gifts)",expense
 11/6/2025,8.12,dining,expense
+11/8/2025, 2000,"personal (clothes, shopping, gifts)",expense
 11/9/2025,45.33,dining,expense
 11/10/2025,33.15,"personal (clothes, shopping, gifts)",expense
 11/12/2025,4.54,dining,expense
@@ -101,6 +105,7 @@ date,amount,category,type
 1/12/2026,45.13,dining,expense
 1/13/2026,35.15,school,expense
 1/14/2026,45.64,"personal (clothes, shopping, gifts)",expense
+1/17/2026,2000,"personal (clothes, shopping, gifts)",expense
 1/19/2026,5.96,transport,expense
 1/19/2026,14.98,dining,expense
 1/20/2026,40.00,school,expense
@@ -121,6 +126,7 @@ date,amount,category,type
 2/13/2026,37.31,dining,expense
 2/13/2026,16.75,dining,expense
 2/13/2026,24.58,transport,expense
+2/14/2026,2000,"personal (clothes, shopping, gifts)",expense
 2/15/2026,34.14,transport,expense
 2/16/2026,22.35,transport,expense
 2/17/2026,37.41,"personal (clothes, shopping, gifts)",expense
