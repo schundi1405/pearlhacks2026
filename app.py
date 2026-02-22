@@ -26,9 +26,24 @@ with col2:
         "<h1 style='margin:0;'>Transaction Tracker</h1>",
         unsafe_allow_html=True
     )
+    
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-image: url("https://raw.githubusercontent.com/schundi1405/pearlhacks2026/main/yellowban.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 tabs = st.tabs(["Transactions", "Visualization", "Goals", "Chatbot"])
 
+# transactions tab
 with tabs[0]:
 
     st.header("Add Transaction")
@@ -61,9 +76,12 @@ with tabs[1]:
 
     df = load_transactions()
 
-
+    # ------------------------------
+    # ROW 1 — Two Line Charts Side by Side
+    # ------------------------------
     col1, col2 = st.columns(2)
 
+    # ---- Cumulative Balance ----
     with col1:
     
         st.subheader("Cumulative Balance Over Time")
@@ -91,8 +109,9 @@ with tabs[1]:
         else:
             st.info("No transactions yet.")
 
+    # ---- Forecast ----
     with col2:
-
+        
         st.subheader("Balance Forecast (Next 6 Months)")
 
         actual_df, forecast_df, explanation = forecast_next_6_months()
@@ -100,8 +119,10 @@ with tabs[1]:
         if actual_df is not None:
             actual_plot = actual_df[["date", "cumulative_balance"]].set_index("date")
             forecast_plot = forecast_df.set_index("date")
+
             combined = actual_plot.join(forecast_plot, how="outer").reset_index()
 
+            # Melt dataframe so Altair can plot multiple lines
             combined_melted = combined.melt(
                 id_vars="date",
                 var_name="type",
@@ -132,6 +153,9 @@ with tabs[1]:
         else:
             st.info("Not enough data to forecast.")
 
+    # ------------------------------
+    # ROW 2 — Bar Chart (Full Width)
+    # ------------------------------
     st.subheader("Spending by Day of Week")
 
     weekday_totals, max_day, min_day = spending_by_weekday()
@@ -175,6 +199,9 @@ with tabs[1]:
         st.info("Not enough expense data yet.")
     
 
+    # ------------------------------
+    # Financial Health Score
+    # ------------------------------
     st.subheader("Financial Health Score")
 
     score, summary = calculate_financial_health()
@@ -220,6 +247,8 @@ with tabs[2]:
             min_value=0.0,
             step=0.01
         )
+
+    # Row 2
     col3, col4 = st.columns(2)
 
     with col3:
@@ -233,6 +262,7 @@ with tabs[2]:
     with col4:
         goal_start_date = st.date_input("Goal Start Date", dt_date.today())
 
+    # Row 3
     col5, col6 = st.columns(2)
 
     with col5:
@@ -285,15 +315,10 @@ with tabs[2]:
 # chatbot tab
 with tabs[3]:
 
-    col1, col2 = st.columns([2, 10], gap="small")  # smallest gap possible
-
-    with col1:
-        st.image("gm.jpg", width=100)
-    with col2:
-        st.markdown(
-            "<h1 style='margin:0; padding:0;'>Penny the Monkey 🐵</h1>",
-            unsafe_allow_html=True
-    )
+    st.markdown(
+    "<h1 style='margin:0; padding:0;'>Penny the Monkey 🐵</h1>",
+    unsafe_allow_html=True
+)
     if "client" not in st.session_state:
         st.session_state.client = genai.Client()
 
