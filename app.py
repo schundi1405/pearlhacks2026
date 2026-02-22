@@ -123,15 +123,13 @@ with tabs[1]:
         with col3:
             st.metric(
                 label="Highest Spending Day",
-                value=max_day["weekday"],
-                delta=f"${max_day['amount']:.2f}"
+                value=f"{max_day['weekday']}: \\${max_day['amount']:.2f} on average"
             )
 
         with col4:
             st.metric(
                 label="Lowest Spending Day",
-                value=min_day["weekday"],
-                delta=f"${min_day['amount']:.2f}"
+                value=f"{min_day['weekday']}: \\${min_day['amount']:.2f} on average"
             )
 
     else:
@@ -148,7 +146,7 @@ with tabs[2]:
     with col1:
         goal_type = st.selectbox(
             "What do you want to do?",
-            ["Save X amount of Money", "Spend less on a specific Day"]
+            ["Save X Amount", "Spend Less on X Day"]
         )
 
     with col2:
