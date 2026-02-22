@@ -12,6 +12,7 @@ from model import forecast_next_6_months
 import pandas as pd
 from google import genai
 import altair as alt
+import base64
 
 
 st.set_page_config(page_title="MoneyMonkey", layout="wide")
@@ -19,7 +20,7 @@ st.set_page_config(page_title="MoneyMonkey", layout="wide")
 col1, col2 = st.columns([0.8, 8], gap="small")
 
 with col1:
-    st.image("gm.jpg", width=150)  # replace with your image file
+    st.image("monk.png", width=100)  # replace with your image file
 
 with col2:
     st.markdown(
@@ -36,7 +37,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://raw.githubusercontent.com/schundi1405/pearlhacks2026/main/yellowbanana.png");
+        background-image: url("https://raw.githubusercontent.com/schundi1405/pearlhacks2026/main/greenban.png");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
@@ -320,10 +321,8 @@ with tabs[2]:
 # chatbot tab
 with tabs[3]:
 
-    st.markdown(
-    "<h1 style='margin:0; padding:0;'>Penny the Monkey 🐵</h1>",
-    unsafe_allow_html=True
-)
+    st.header("Penny the Monkey 🐵")
+
     if "client" not in st.session_state:
         st.session_state.client = genai.Client()
 
