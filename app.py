@@ -4,29 +4,37 @@ from datetime import date as dt_date
 from utils import add_transaction, load_transactions, spending_by_weekday, check_goal_feasibility
 from model import forecast_next_6_months
 import pandas as pd
+from google import genai
+
+
+
+
 
 st.set_page_config(page_title="Transaction Tracker", layout="wide")
 st.title("Transaction Tracker")
 
-tabs = st.tabs(["Transactions", "Visualization", "Goals"])
+tabs = st.tabs(["Transactions", "Visualization", "Goals", "Chatbot"])
 
 # --- TAB 1: Transactions ---
 with tabs[0]:
     st.header("Add Transaction")
     with st.form("add_transaction_form"):
-        date_input = st.date_input("Date", dt_date.today())
-        amount_input = st.number_input("Amount", min_value=0.0, step=0.01)
-        category_input = st.text_input("Category")
-        type_input = st.selectbox("Type", ["expense", "income"])
+        date_input = st.date_input("date", dt_date.today())
+        amount_input = st.number_input("amount", min_value=0.0, step=0.01)
+        category_input = st.text_input("category")
+        type_input = st.selectbox("type", ["expense", "income"])
         submitted = st.form_submit_button("Add Transaction")
         if submitted:
             df = add_transaction(date_input, amount_input, category_input, type_input)
             st.success("Transaction added!")
             st.dataframe(df)
+            # Store the updated DataFrame for Penny in Tab 3
 
     st.subheader("All Transactions")
     df = load_transactions()
     st.dataframe(df)
+    # Store the loaded DataFrame in session_state so Tab 3 can access it
+    st.session_state["financial_data"] = df
 
 # --- TAB 2: Visualization ---
 with tabs[1]:
@@ -94,3 +102,60 @@ with tabs[2]:
         if checkpoints is not None and not checkpoints.empty:
             st.write("### Suggested Checkpoints")
             st.dataframe(checkpoints)
+
+with tabs[3]:
+    st.title("🐵 Penny the Monkey 💰")
+
+    # Create client once
+    if "client" not in st.session_state:
+        st.session_state.client = genai.Client()
+
+    # Create Penny chat once
+    if "chat" not in st.session_state:
+        st.session_state.chat = st.session_state.client.chats.create(
+            model="gemini-2.5-flash",
+            config={
+                "system_instruction": "You are Penny the Monkey 🐵, a friendly financial guide...",
+                "temperature": 0.7
+            }
+        )
+
+    # Initialize messages
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {
+                "role": "assistant",
+                "content": "Hi! I'm Penny the Monkey 🐵💰 I'm here to help you feel confident about your money!"
+            }
+        ]
+
+    # Use a container to hold the chat messages
+    chat_container = st.container()
+
+    # Display previous messages
+    with chat_container:
+        for msg in st.session_state.messages:
+            avatar = "🐵" if msg["role"] == "assistant" else "👩‍💻"
+            with st.chat_message(msg["role"], avatar=avatar):
+                st.markdown(msg["content"])
+
+    # Chat input (always below messages)
+    prompt = st.chat_input("Ask Penny about money 💰")
+    if prompt:
+        # Show user message
+        with chat_container:
+            with st.chat_message("user", avatar="👩‍💻"):
+                st.markdown(prompt)
+        # Save user message
+        st.session_state.messages.append({"role": "user", "content": prompt})
+
+        # Stream AI response
+        with chat_container:
+            with st.chat_message("assistant", avatar="🐵"):
+                placeholder = st.empty()
+                full_response = ""
+                for chunk in st.session_state.chat.send_message_stream(prompt):
+                    full_response += chunk.text
+                    placeholder.markdown(full_response)
+        # Save AI response
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
