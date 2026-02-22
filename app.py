@@ -32,10 +32,14 @@ with tabs[0]:
         if submitted:
             df = add_transaction(date_input, amount_input, category_input, type_input)
             st.success("Transaction added!")
+            # Convert datetime to date
+            df['date'] = pd.to_datetime(df['date']).dt.date
             st.dataframe(df)
 
     st.subheader("All Transactions")
     df = load_transactions()
+    # Convert datetime to date
+    df['date'] = pd.to_datetime(df['date']).dt.date
     st.dataframe(df)
     st.session_state["financial_data"] = df
 
