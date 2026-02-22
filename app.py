@@ -14,7 +14,7 @@ from google import genai
 import altair as alt
 
 
-st.set_page_config(page_title="Transaction Tracker", layout="wide")
+st.set_page_config(page_title="MoneyMonkey", layout="wide")
 
 col1, col2 = st.columns([0.8, 8], gap="small")
 
@@ -23,9 +23,14 @@ with col1:
 
 with col2:
     st.markdown(
-        "<h1 style='margin:0;'>Transaction Tracker</h1>",
+        "<h1 style='margin:0; color:green;'>MoneyMonkey!</h1>",
         unsafe_allow_html=True
     )
+
+st.markdown(
+    "<h3 style='margin-top:5px; color:black;'>Hello, Churro! Welcome back to your spending profile.</h3>",
+    unsafe_allow_html=True
+)
     
 st.markdown(
     """
