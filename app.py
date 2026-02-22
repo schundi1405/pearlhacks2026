@@ -13,6 +13,9 @@ import pandas as pd
 from google import genai
 import altair as alt
 import base64
+import os
+
+
 
 
 st.set_page_config(page_title="MoneyMonkey", layout="wide")
@@ -318,13 +321,14 @@ with tabs[2]:
             st.markdown(f"## Reward Unlocked: {st.session_state['goal_reward']}")
 
 
-# chatbot tab
 with tabs[3]:
 
     st.header("Penny the Monkey 🐵")
 
+    # Initialize client with API key
     if "client" not in st.session_state:
-        st.session_state.client = genai.Client()
+        API_KEY = os.getenv("GOOGLE_GENAI_API_KEY")
+        st.session_state.client = genai.Client(api_key=API_KEY)
 
     if "chat" not in st.session_state:
         st.session_state.chat = st.session_state.client.chats.create(
