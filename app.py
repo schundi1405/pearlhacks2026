@@ -10,15 +10,14 @@ from utils import (
 from model import forecast_next_6_months
 import pandas as pd
 from google import genai
+import altair as alt
 
 st.set_page_config(page_title="Transaction Tracker", layout="wide")
 st.title("Transaction Tracker")
 
 tabs = st.tabs(["Transactions", "Visualization", "Goals", "Chatbot"])
 
-# ==============================
-# TAB 1 — Transactions
-# ==============================
+# transactions tab
 with tabs[0]:
 
     st.header("Add Transaction")
@@ -40,79 +39,148 @@ with tabs[0]:
     st.dataframe(df)
     st.session_state["financial_data"] = df
 
-# ==============================
-# TAB 2 — Visualization
-# ==============================
+# visualizations tab
 with tabs[1]:
 
-    st.header("Cumulative Balance Over Time")
-    df = load_transactions()
-    if not df.empty:
-        df['signed_amount'] = df.apply(
-            lambda row: row['amount'] if row['type']=='income' else -row['amount'],
-            axis=1
-        )
-        df = df.sort_values('date')
-        df['cumulative_balance'] = df['signed_amount'].cumsum()
-        st.line_chart(data=df.set_index('date')['cumulative_balance'])
-    else:
-        st.info("No transactions yet.")
+    st.header("Financial Overview")
 
+    df = load_transactions()
+
+    # ------------------------------
+    # ROW 1 — Two Line Charts Side by Side
+    # ------------------------------
+    col1, col2 = st.columns(2)
+
+    # ---- Cumulative Balance ----
+    with col1:
+        st.subheader("Cumulative Balance Over Time")
+
+        if not df.empty:
+            df['signed_amount'] = df.apply(
+                lambda row: row['amount'] if row['type']=='income' else -row['amount'],
+                axis=1
+            )
+            df = df.sort_values('date')
+            df['cumulative_balance'] = df['signed_amount'].cumsum()
+
+            st.line_chart(
+                data=df.set_index('date')['cumulative_balance'],
+                height=350
+            )
+        else:
+            st.info("No transactions yet.")
+
+    # ---- Forecast ----
+    with col2:
+        st.subheader("Balance Forecast (Next 6 Months)")
+
+        actual_df, forecast_df, explanation = forecast_next_6_months()
+
+        if actual_df is not None:
+            actual_plot = actual_df[["date", "cumulative_balance"]].set_index("date")
+            forecast_plot = forecast_df.set_index("date")
+            combined = actual_plot.join(forecast_plot, how="outer")
+
+            st.line_chart(combined, height=350)
+
+        else:
+            st.info("Not enough data to forecast.")
+
+    # ------------------------------
+    # ROW 2 — Bar Chart (Full Width)
+    # ------------------------------
     st.subheader("Spending by Day of Week")
+
     weekday_totals, max_day, min_day = spending_by_weekday()
+
     if weekday_totals is not None:
-        st.bar_chart(data=weekday_totals.set_index("weekday")["amount"])
-        st.write(f"Highest Spending Day: **{max_day['weekday']}** (${max_day['amount']:.2f})")
-        st.write(f"Lowest Spending Day: **{min_day['weekday']}** (${min_day['amount']:.2f})")
+
+        chart = (
+            alt.Chart(weekday_totals)
+            .mark_bar()
+            .encode(
+                x=alt.X(
+                    "weekday:N",
+                    sort=[
+                        "Monday","Tuesday","Wednesday",
+                        "Thursday","Friday","Saturday","Sunday"
+                    ],
+                    axis=alt.Axis(labelAngle=0, title=None)  # <-- keeps labels horizontal
+                ),
+                y=alt.Y("amount:Q", title="Average Spending ($)")
+            )
+            .properties(height=350)
+        )
+
+        st.altair_chart(chart, use_container_width=True)
+
+        col3, col4 = st.columns(2)
+
+        with col3:
+            st.metric(
+                label="Highest Spending Day",
+                value=max_day["weekday"],
+                delta=f"${max_day['amount']:.2f}"
+            )
+
+        with col4:
+            st.metric(
+                label="Lowest Spending Day",
+                value=min_day["weekday"],
+                delta=f"${min_day['amount']:.2f}"
+            )
+
     else:
         st.info("Not enough expense data yet.")
 
-    st.subheader("Balance Forecast (Next 6 Months)")
-    actual_df, forecast_df, explanation = forecast_next_6_months()
-    if actual_df is not None:
-        actual_plot = actual_df[["date", "cumulative_balance"]].set_index("date")
-        forecast_plot = forecast_df.set_index("date")
-        combined = actual_plot.join(forecast_plot, how="outer")
-        st.line_chart(combined)
-        st.write("### Why this prediction?")
-        st.write(explanation)
-    else:
-        st.info("Not enough data to forecast.")
-
-# ==============================
-# TAB 3 — Goals
-# ==============================
+# goals tab
 with tabs[2]:
 
     st.header("Set a Financial Goal")
 
-    goal_type = st.selectbox(
-        "What do you want to do?",
-        ["Save X amount of Money", "Spend less on a specific Day"]
-    )
+    # Row 1
+    col1, col2 = st.columns(2)
 
-    goal_amount = st.number_input(
-        "Goal Amount ($)",
-        min_value=0.0,
-        step=0.01
-    )
-
-    goal_time_months = st.number_input(
-        "Timeframe (months)",
-        min_value=1,
-        max_value=60,
-        step=1
-    )
-
-    goal_start_date = st.date_input("Goal Start Date", dt_date.today())
-    goal_reward = st.text_input("Reward for Completing This Goal")
-
-    goal_day = None
-    if goal_type == "Spend less on a specific Day":
-        goal_day = st.selectbox(
-            "Select Day of the Week",
-            ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+    with col1:
+        goal_type = st.selectbox(
+            "What do you want to do?",
+            ["Save X amount of Money", "Spend less on a specific Day"]
         )
+
+    with col2:
+        goal_amount = st.number_input(
+            "Goal Amount ($)",
+            min_value=0.0,
+            step=0.01
+        )
+
+    # Row 2
+    col3, col4 = st.columns(2)
+
+    with col3:
+        goal_time_months = st.number_input(
+            "Timeframe (months)",
+            min_value=1,
+            max_value=60,
+            step=1
+        )
+
+    with col4:
+        goal_start_date = st.date_input("Goal Start Date", dt_date.today())
+
+    # Row 3
+    col5, col6 = st.columns(2)
+
+    with col5:
+        goal_reward = st.text_input("Reward for Completing This Goal")
+
+    with col6:
+        goal_day = None
+        if goal_type == "Spend less on a specific Day":
+            goal_day = st.selectbox(
+                "Select Day of the Week",
+                ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+            )
 
     if st.button("Check Goal Feasibility"):
         explanation, checkpoints = check_goal_feasibility(
@@ -128,9 +196,6 @@ with tabs[2]:
             st.session_state["goal_reward"] = goal_reward
             st.session_state["reward_given"] = False
 
-    # --------------------------
-    # Track Progress
-    # --------------------------
     if "goal_checkpoints" in st.session_state:
         st.subheader("Track Your Progress")
         df_cp = st.session_state["goal_checkpoints"]
@@ -149,13 +214,11 @@ with tabs[2]:
         if st.session_state["goal_checkpoints"]["Completed"].all() and not st.session_state["reward_given"]:
             st.session_state["reward_given"] = True
             st.success("Goal Completed!")
-            st.balloons()
+            st.balloons() 
             st.markdown(f"## Reward Unlocked: {st.session_state['goal_reward']}")
 
 
-# ==============================
-# TAB 4 — Chatbot
-# ==============================
+# chatbot tab
 with tabs[3]:
 
     st.title("🐵 Penny the Monkey 💰")
