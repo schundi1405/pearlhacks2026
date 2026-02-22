@@ -4,7 +4,6 @@ from datetime import date as dt_date
 
 st.title("Transaction Tracker")
 
-# Input form
 with st.form("add_transaction_form"):
     date_input = st.date_input("Date", dt_date.today())
     amount_input = st.number_input("Amount", min_value=0.0, step=0.01)

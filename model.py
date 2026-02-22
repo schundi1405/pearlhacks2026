@@ -11,7 +11,6 @@ def forecast_next_6_months():
     if df.empty:
         return None, None, None
 
-    # Signed amounts
     df["signed_amount"] = df.apply(
         lambda r: r["amount"] if r["type"] == "income" else -r["amount"],
         axis=1
@@ -20,7 +19,6 @@ def forecast_next_6_months():
     df["cumulative_balance"] = df["signed_amount"].cumsum()
     df["t"] = (df["date"] - df["date"].min()).dt.days
 
-    # Linear regression
     X = df["t"].values.reshape(-1, 1)  # days since first transaction
     y = df["cumulative_balance"].values
     model = LinearRegression()
@@ -40,7 +38,6 @@ def forecast_next_6_months():
         "predicted_balance": predictions
     })
 
-    # Top spending category
     expense_df = df[df["type"] == "expense"].copy()
     category_totals = (
         expense_df.groupby("category")["amount"]

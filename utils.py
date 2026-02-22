@@ -6,9 +6,6 @@ import streamlit as st
 
 CSV_FILE = "sample_data_sheet1.csv"
 
-# -------------------------
-# Transactions
-# -------------------------
 def load_transactions():
     df = pd.read_csv(CSV_FILE, parse_dates=['date'])
     return df
@@ -48,9 +45,7 @@ def spending_by_weekday():
     return weekday_avg, max_day, min_day
 
 
-# -------------------------
-# Monthly Checkpoints
-# -------------------------
+
 def generate_monthly_checkpoints(goal_amount, months, start_date):
     contribution = round(goal_amount / months, 2)
     dates = []
@@ -66,9 +61,6 @@ def generate_monthly_checkpoints(goal_amount, months, start_date):
     return checkpoints
 
 
-# -------------------------
-# Spend Less on Specific Day Checkpoints
-# -------------------------
 def generate_daily_reduction_checkpoints(goal_amount, months, day, start_date):
     """
     Generate checkpoints for each occurrence of a weekday over the timeframe,
@@ -79,14 +71,14 @@ def generate_daily_reduction_checkpoints(goal_amount, months, day, start_date):
     weekday_map = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
     weekday_num = weekday_map.index(day)
 
-    # Approx 4 occurrences per month
+
     for _ in range(months * 4):
         delta_days = (weekday_num - current_date.weekday() + 7) % 7
         if delta_days == 0:
             delta_days = 7
         current_date = current_date + pd.Timedelta(days=delta_days)
         dates.append(current_date)
-        current_date = current_date + pd.Timedelta(days=1)  # move past the current day
+        current_date = current_date + pd.Timedelta(days=1) 
 
     contributions = [goal_amount]*len(dates)
     cumulative = pd.Series(contributions).cumsum()
@@ -100,9 +92,6 @@ def generate_daily_reduction_checkpoints(goal_amount, months, day, start_date):
     return checkpoints
 
 
-# -------------------------
-# Check Goal Feasibility
-# -------------------------
 def check_goal_feasibility(goal_type, goal_amount, months,
                            category=None, day=None,
                            start_date=None):
@@ -114,7 +103,7 @@ def check_goal_feasibility(goal_type, goal_amount, months,
     )
     df['month'] = df['date'].dt.to_period("M")
 
-    # Save Money Goal
+
     if goal_type == "Save X amount of Money":
         monthly_net = df.groupby("month")['signed_amount'].sum().mean()
         monthly_target = goal_amount / months
@@ -129,7 +118,7 @@ def check_goal_feasibility(goal_type, goal_amount, months,
             return explanation, checkpoints
         return explanation, None
 
-    # Spend Less on Day Goal
+
     elif goal_type == "Spend less on a specific Day":
         if day is None:
             return "No day selected.", None
@@ -152,10 +141,7 @@ def check_goal_feasibility(goal_type, goal_amount, months,
 
     return "Goal type not supported yet.", None
 
-# -------------------------
-# Financial Health Score
-# -------------------------
-def calculate_financial_health(goal_checkpoints=None):
+def calculate_financial_health(goal_checkpoints = None):
     """
     Returns:
         score (int): 1-10 score
@@ -165,12 +151,12 @@ def calculate_financial_health(goal_checkpoints=None):
     if df.empty:
         return 1, "No transactions yet. Unable to evaluate finances."
 
-    # Factor 1: Goal adherence
+
     goal_completed_ratio = 1.0
     if goal_checkpoints is not None and not goal_checkpoints.empty:
         goal_completed_ratio = goal_checkpoints["Completed"].mean()
 
-    # Factor 2: Predicted balance trend
+
     from model import forecast_next_6_months
     actual_df, forecast_df, _ = forecast_next_6_months()
     trend_score = 5
@@ -192,11 +178,11 @@ def calculate_financial_health(goal_checkpoints=None):
             trend_score = 2
             trend_direction = "decreasing"
 
-    # Combine factors
+
     score = int(round(0.5 * (goal_completed_ratio * 10) + 0.5 * trend_score))
     score = max(1, min(score, 10))
 
-    # Top spending category
+
     expense_df = df[df["type"] == "expense"].copy()
     category_totals = (
         expense_df.groupby("category")["amount"]
@@ -210,7 +196,7 @@ def calculate_financial_health(goal_checkpoints=None):
         top_category = "N/A"
         top_value = 0
 
-    # Enhanced summary
+
     summary = (
         f"Your financial health is currently {trend_direction}. "
         f"You have completed {goal_completed_ratio*100:.0f}% of your financial goals. "
