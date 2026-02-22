@@ -31,7 +31,7 @@ st.markdown(
     """
     <style>
     .stApp {
-        background-image: url("https://raw.githubusercontent.com/schundi1405/pearlhacks2026/main/yellowban.png");
+        background-image: url("https://raw.githubusercontent.com/schundi1405/pearlhacks2026/main/yellowbanana.png");
         background-size: cover;
         background-repeat: no-repeat;
         background-attachment: fixed;
@@ -111,7 +111,7 @@ with tabs[1]:
 
     # ---- Forecast ----
     with col2:
-        
+
         st.subheader("Balance Forecast (Next 6 Months)")
 
         actual_df, forecast_df, explanation = forecast_next_6_months()
