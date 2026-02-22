@@ -12,8 +12,19 @@ import pandas as pd
 from google import genai
 import altair as alt
 
+
 st.set_page_config(page_title="Transaction Tracker", layout="wide")
-st.title("Transaction Tracker")
+
+col1, col2 = st.columns([0.8, 8], gap="small")
+
+with col1:
+    st.image("gm.jpg", width=150)  # replace with your image file
+
+with col2:
+    st.markdown(
+        "<h1 style='margin:0;'>Transaction Tracker</h1>",
+        unsafe_allow_html=True
+    )
 
 tabs = st.tabs(["Transactions", "Visualization", "Goals", "Chatbot"])
 
@@ -57,6 +68,7 @@ with tabs[1]:
 
     # ---- Cumulative Balance ----
     with col1:
+    
         st.subheader("Cumulative Balance Over Time")
 
         if not df.empty:
@@ -67,15 +79,24 @@ with tabs[1]:
             df = df.sort_values('date')
             df['cumulative_balance'] = df['signed_amount'].cumsum()
 
-            st.line_chart(
-                data=df.set_index('date')['cumulative_balance'],
-                height=350
+            chart = (
+                alt.Chart(df)
+                .mark_line(color="green", strokeWidth=3)
+                .encode(
+                    x="date:T",
+                    y="cumulative_balance:Q"
+                )
+                .properties(height=350)
             )
+
+            st.altair_chart(chart, use_container_width=True)
+
         else:
             st.info("No transactions yet.")
 
     # ---- Forecast ----
     with col2:
+
         st.subheader("Balance Forecast (Next 6 Months)")
 
         actual_df, forecast_df, explanation = forecast_next_6_months()
@@ -83,9 +104,35 @@ with tabs[1]:
         if actual_df is not None:
             actual_plot = actual_df[["date", "cumulative_balance"]].set_index("date")
             forecast_plot = forecast_df.set_index("date")
-            combined = actual_plot.join(forecast_plot, how="outer")
+            combined = actual_plot.join(forecast_plot, how="outer").reset_index()
 
-            st.line_chart(combined, height=350)
+            # Melt dataframe so Altair can plot multiple lines
+            combined_melted = combined.melt(
+                id_vars="date",
+                var_name="type",
+                value_name="balance"
+            )
+
+            chart = (
+                alt.Chart(combined_melted)
+                .mark_line(strokeWidth=3)
+                .encode(
+                    x="date:T",
+                    y="balance:Q",
+                    color=alt.Color(
+                        "type:N",
+                        scale=alt.Scale(range=["green", "green"])
+                    ),
+                    strokeDash=alt.condition(
+                        alt.datum.type == combined.columns[2],
+                        alt.value([5,5]),
+                        alt.value([1,0])
+                    )
+                )
+                .properties(height=350)
+            )
+
+            st.altair_chart(chart, use_container_width=True)
 
         else:
             st.info("Not enough data to forecast.")
@@ -101,7 +148,7 @@ with tabs[1]:
 
         chart = (
             alt.Chart(weekday_totals)
-            .mark_bar()
+            .mark_bar(color="green")
             .encode(
                 x=alt.X(
                     "weekday:N",
@@ -223,8 +270,15 @@ with tabs[2]:
 # chatbot tab
 with tabs[3]:
 
-    st.title("🐵 Penny the Monkey 💰")
+    col1, col2 = st.columns([2, 10], gap="small")  # smallest gap possible
 
+    with col1:
+        st.image("gm.jpg", width=100)
+    with col2:
+        st.markdown(
+            "<h1 style='margin:0; padding:0;'>Penny the Monkey 🐵</h1>",
+            unsafe_allow_html=True
+    )
     if "client" not in st.session_state:
         st.session_state.client = genai.Client()
 
