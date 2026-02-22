@@ -104,7 +104,7 @@ def check_goal_feasibility(goal_type, goal_amount, months,
     df['month'] = df['date'].dt.to_period("M")
 
 
-    if goal_type == "Save X amount of Money":
+    if goal_type == "Save X Amount":
         monthly_net = df.groupby("month")['signed_amount'].sum().mean()
         monthly_target = goal_amount / months
         feasible = monthly_target <= monthly_net
@@ -119,7 +119,7 @@ def check_goal_feasibility(goal_type, goal_amount, months,
         return explanation, None
 
 
-    elif goal_type == "Spend less on a specific Day":
+    elif goal_type == "Spend Less on X Day":
         if day is None:
             return "No day selected.", None
 
