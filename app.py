@@ -5,7 +5,8 @@ from utils import (
     add_transaction,
     load_transactions,
     spending_by_weekday,
-    check_goal_feasibility
+    check_goal_feasibility, 
+    calculate_financial_health
 )
 from model import forecast_next_6_months
 import pandas as pd
@@ -181,6 +182,35 @@ with tabs[1]:
 
     else:
         st.info("Not enough expense data yet.")
+    
+
+    # ------------------------------
+    # Financial Health Score
+    # ------------------------------
+    st.subheader("Financial Health Score")
+
+    score, summary = calculate_financial_health()
+
+    col_left, col_center, col_right = st.columns([1, 2, 1])
+
+    with col_center:
+        # Circle visualization using st.metric (centered)
+        st.markdown(f"""
+            <div style='text-align:center; margin-top:20px;'>
+                <div style='
+                    display:inline-block;
+                    border-radius:50%;
+                    width:120px;
+                    height:120px;
+                    line-height:120px;
+                    background-color:#4CAF50;
+                    color:white;
+                    font-size:48px;
+                    font-weight:bold;
+                '>{score}</div>
+                <p style='margin-top:10px; font-size:16px;'>{summary}</p>
+            </div>
+        """, unsafe_allow_html=True)
 
 # goals tab
 with tabs[2]:

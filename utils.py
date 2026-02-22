@@ -2,6 +2,7 @@
 import pandas as pd
 from datetime import date
 from dateutil.relativedelta import relativedelta
+import streamlit as st
 
 CSV_FILE = "sample_data_sheet1.csv"
 
@@ -150,3 +151,71 @@ def check_goal_feasibility(goal_type, goal_amount, months,
         return explanation, None
 
     return "Goal type not supported yet.", None
+
+# -------------------------
+# Financial Health Score
+# -------------------------
+def calculate_financial_health(goal_checkpoints=None):
+    """
+    Returns:
+        score (int): 1-10 score
+        summary (str): descriptive explanation of the score
+    """
+    df = load_transactions()
+    if df.empty:
+        return 1, "No transactions yet. Unable to evaluate finances."
+
+    # Factor 1: Goal adherence
+    goal_completed_ratio = 1.0
+    if goal_checkpoints is not None and not goal_checkpoints.empty:
+        goal_completed_ratio = goal_checkpoints["Completed"].mean()
+
+    # Factor 2: Predicted balance trend
+    from model import forecast_next_6_months
+    actual_df, forecast_df, _ = forecast_next_6_months()
+    trend_score = 5
+    trend_direction = "steady"
+    if forecast_df is not None:
+        predicted_balance = forecast_df["predicted_balance"].iloc[-1]
+        current_balance = actual_df["cumulative_balance"].iloc[-1]
+        change_ratio = (predicted_balance - current_balance) / max(current_balance, 1)
+        if change_ratio > 0.1:
+            trend_score = 10
+            trend_direction = "increasing"
+        elif change_ratio > 0:
+            trend_score = 8
+            trend_direction = "slightly increasing"
+        elif change_ratio > -0.1:
+            trend_score = 5
+            trend_direction = "stable"
+        else:
+            trend_score = 2
+            trend_direction = "decreasing"
+
+    # Combine factors
+    score = int(round(0.5 * (goal_completed_ratio * 10) + 0.5 * trend_score))
+    score = max(1, min(score, 10))
+
+    # Top spending category
+    expense_df = df[df["type"] == "expense"].copy()
+    category_totals = (
+        expense_df.groupby("category")["amount"]
+        .sum()
+        .sort_values(ascending=False)
+    )
+    if not category_totals.empty:
+        top_category = category_totals.idxmax()
+        top_value = category_totals.max()
+    else:
+        top_category = "N/A"
+        top_value = 0
+
+    # Enhanced summary
+    summary = (
+        f"Your financial health is currently {trend_direction}. "
+        f"You have completed {goal_completed_ratio*100:.0f}% of your financial goals. "
+        f"The largest contributor to spending is '{top_category}' "
+        f"(total: ${top_value:.2f})."
+    )
+
+    return score, summary
